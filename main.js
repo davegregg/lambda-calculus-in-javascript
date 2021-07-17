@@ -11,9 +11,11 @@ const OR = null
 const XOR = null
 
 
+console.info("%cTest NOT operator against TRUE and FALSE primitives", "color:gold")
 expectEquals("NOT(TRUE) to be equal to FALSE", NOT(TRUE), FALSE)
 expectEquals("NOT(FALSE) to be equal to TRUE", NOT(FALSE), TRUE)
 
+console.info("%cTest AND operator", "color:gold")
 expectEquals("AND(TRUE)(TRUE) to be equal to TRUE", AND(TRUE)(TRUE), TRUE)
 expectEquals("AND(TRUE)(FALSE) to be equal to FALSE", AND(TRUE)(FALSE), FALSE)
 expectEquals("AND(FALSE)(TRUE) to be equal to FALSE", AND(FALSE)(TRUE), FALSE)
