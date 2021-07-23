@@ -1,29 +1,54 @@
-const expectEquals = (msg, actual, expected) => {
-    console.assert(actual === expected, `Expected ${msg}. Instead got ${actual.name}.`)
+const test = (description, testBlock, descMaxLength = 60) => {
+    console.group(description.padEnd(descMaxLength, "-"))
+        testBlock()
+    console.groupEnd()
 }
 
-const True = x => y => x
-const False = x => y => y
+const expectEquals = (actual, expected) => {
+    const successStyle = `color: green;`
+    const failureStyle = `color: red;`
+    
+    const result = actual === expected
+    if (result === false) {
+        const expectation = `Expectation: ${expected.name}\n\t${expected.toString()}.`
+        const reality = `Reality: ${actual.name}\n\t${actual.toString()}.`
 
-const Not = b => b(False)(True)
-const And = x => y => x(y(True)(False))(False)
-const Or = x => y => x(True)(y(True)(False))
-const If = null
+        console.log(`%cTest failed.\n\n${expectation}\n\n${reality}`, failureStyle)
+    } else {
+        console.log("%cSuccess!", successStyle)
+    }
+}
+
+const True = first => second => first
+const False = first => second => second
+
+const Not = first => first(False)(True)
+const And = first => second => first(second(True)(False))(False)
+const Or = first => second => first(True)(second(True)(False))
+const If = Condition => Then => Else => Condition(Then)(Else)
+
+const $0 = fun => x => x
+const $1 = fun => x => fun(x)
+const $2 = fun => x => fun(fun(x))
+const $3 = fun => x => fun(fun(fun(x)))
 
 
-console.info("%cTest NOT operator against TRUE and FALSE primitives ---", "color: indigo;")
-expectEquals("NOT(TRUE) to be equal to FALSE", Not(True), False)
-expectEquals("NOT(FALSE) to be equal to TRUE", Not(False), True)
+test("NOT operator and Booleans", () => {
+    expectEquals(Not(True), False)
+    expectEquals(Not(False), True)
+})
 
-console.info("%cTest AND operator -------------------------------------", "color: indigo;")
-expectEquals("AND(TRUE)(TRUE) to be equal to TRUE", And(True)(True), True)
-expectEquals("AND(TRUE)(FALSE) to be equal to FALSE", And(True)(False), False)
-expectEquals("AND(FALSE)(TRUE) to be equal to FALSE", And(False)(True), False)
-expectEquals("AND(FALSE)(FALSE) to be equal to FALSE", And(False)(False), False)
+test("AND operator", () => {
+    expectEquals(And(True)(True), True)
+    expectEquals(And(False)(False), False)
+    expectEquals(And(True)(False), False)
+    expectEquals(And(False)(True), False)
+})
 
-console.info("%cTest OR operator --------------------------------------", "color: indigo;")
-expectEquals("OR(FALSE)(TRUE) to be equal to TRUE", Or(False)(True), True)
-expectEquals("OR(TRUE)(FALSE) to be equal to TRUE", Or(True)(False), True)
-expectEquals("OR(FALSE)(FALSE) to be equal to FALSE", Or(False)(False), False)
-expectEquals("OR(TRUE)(TRUE) to be equal to TRUE", Or(True)(True), True)
+test("OR operator", () => {
+    expectEquals(Or(True)(True), True)
+    expectEquals(Or(False)(True), True)
+    expectEquals(Or(True)(False), True)
+    expectEquals(Or(False)(False), False)
+})
 
