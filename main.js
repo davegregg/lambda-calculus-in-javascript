@@ -1,5 +1,5 @@
 const test = (description, testBlock, descMaxLength = 60) => {
-    console.group(description.padEnd(descMaxLength, "-"))
+    console.group(description.toString().padEnd(descMaxLength, "-"))
         testBlock()
     console.groupEnd()
 }
